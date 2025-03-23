@@ -1,0 +1,5 @@
+anthropic==0.18.1
+python-dotenv==0.21.1
+feedparser==6.0.10
+requests==2.31.0
+openai==0.28.1  # Last version supporting Python 3.7 
