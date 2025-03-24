@@ -1,92 +1,91 @@
-# TubeToTweet 🎥 ➡️ 🐦
+# YouTube Tweet Generator
 
-An AI-powered tool that generates engaging tweets from YouTube videos. Supports multiple AI providers (Claude and DeepSeek) for tweet generation.
-
-## Features
-
-- Fetch recent videos from any YouTube channel
-- Generate engaging tweets using AI (Claude or DeepSeek)
-- Automatic character limit enforcement for tweets
-- Support for emojis and hashtags
-- Command-line interface for easy use
-- Environment variable configuration
+A web application that generates tweet suggestions based on YouTube channel content using AI (Claude or DeepSeek).
 
 ## Prerequisites
 
-- Python 3.7+
-- YouTube Channel ID
-- API key for either Claude or DeepSeek
+- Python 3.11 or higher
+- Node.js (with npm)
+- Virtual environment tool (venv)
 
-## Installation
+## Setup
 
-1. Clone the repository:
+### Backend Setup
+
+1. Create and activate a Python virtual environment:
 ```bash
-git clone https://github.com/yourusername/tubetotweet.git
-cd tubetotweet
+python -m venv venv-3.11
+source venv-3.11/bin/activate  # On Unix/macOS
+# or
+.\venv-3.11\Scripts\activate  # On Windows
 ```
 
-2. Create and activate a virtual environment:
+2. Install Python dependencies:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-# On macOS, if tokenizers installation fails, first run:
-pip install --no-build-isolation tokenizers==0.13.3
-
-# Then install remaining dependencies:
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the project root:
+3. Set up your environment variables:
+Create a `.env` file in the root directory with:
 ```
-CLAUDE_API_KEY=your_claude_api_key_here
-DEEPSEEK_API_KEY=your_deepseek_api_key_here
-YOUTUBE_CHANNEL_ID=default_channel_id_here  # Optional
+DEEPSEEK_API_KEY=your_deepseek_api_key
+CLAUDE_API_KEY=your_claude_api_key
 ```
+
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+```bash
+cd frontend
+```
+
+2. Install Node.js dependencies:
+```bash
+npm install
+```
+
+## Running the Application
+
+1. Start the Flask backend server (from the project root):
+```bash
+cd src
+python server.py
+```
+The backend will run on http://localhost:8000
+
+2. In a new terminal, start the React frontend (from the project root):
+```bash
+cd frontend
+npm start
+```
+The frontend will run on http://localhost:3000
 
 ## Usage
 
-Basic usage:
-```bash
-python main.py --channel-id=CHANNEL_ID
-```
+1. Open your browser and navigate to http://localhost:3000
+2. Enter a YouTube Channel ID in the input field
+3. Select your preferred AI provider (Claude or DeepSeek)
+4. Enter your API key for the selected provider
+5. Click "Generate Tweets" to create tweet suggestions
+6. Use the copy button on each tweet card to copy the content to your clipboard
 
-Options:
-- `--channel-id`: YouTube channel ID to fetch videos from
-- `--provider`: AI provider to use (`claude` or `deepseek`, defaults to claude)
-- `--max-videos`: Maximum number of recent videos to process (default: 3)
+## Features
 
-Examples:
-```bash
-# Use Claude (default) with specific channel
-python main.py --channel-id=UCsBjURrPoezykLs9EqgamOA
+- Generate tweet suggestions based on YouTube channel content
+- Support for multiple AI providers (Claude and DeepSeek)
+- Modern Material-UI interface
+- Copy-to-clipboard functionality
+- Real-time error handling and loading states
+- Responsive design
 
-# Use DeepSeek and process 5 videos
-python main.py --channel-id=UCsBjURrPoezykLs9EqgamOA --provider=deepseek --max-videos=5
-```
+## Development Notes
 
-## Configuration
+- The backend runs on port 8000 to avoid conflicts with macOS AirPlay
+- Frontend development server uses legacy OpenSSL provider for compatibility
+- Debug mode is enabled on the backend for development purposes
 
-The application can be configured using either command-line arguments or environment variables:
+## Troubleshooting
 
-1. Command-line arguments take precedence over environment variables
-2. Environment variables in `.env` file:
-   - `CLAUDE_API_KEY`: Your Claude API key
-   - `DEEPSEEK_API_KEY`: Your DeepSeek API key
-   - `YOUTUBE_CHANNEL_ID`: Default YouTube channel ID
-   - `AI_PROVIDER`: Default AI provider (`claude` or `deepseek`)
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+- If port 8000 is in use, you can modify the port in `src/server.py`
+- If you encounter OpenSSL issues with the frontend, the start script includes the necessary legacy provider flag
+- Check the browser console and terminal for detailed error messages 

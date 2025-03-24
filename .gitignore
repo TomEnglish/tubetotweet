@@ -45,4 +45,20 @@ logs/
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# React/Build
+/frontend/build
+/frontend/coverage
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local 
