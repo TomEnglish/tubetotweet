@@ -11,7 +11,7 @@ source venv/bin/activate  # On macOS/Linux
 2. Create `requirements.txt`:
 ```
 openai>=1.12.0  # DeepSeek uses OpenAI-compatible API
-python-dotenv==0.21.1
+python-dotenv>=1.0.1
 ```
 
 3. Install dependencies:
@@ -26,8 +26,7 @@ pip install -r requirements.txt
 DEEPSEEK_API_KEY=your_api_key_here
 ```
 
-Note: DeepSeek supports two base URLs:
-- `https://api.deepseek.com`
+Note: DeepSeek's recommended base URL is:
 - `https://api.deepseek.com/v1` (OpenAI-compatible version)
 
 ## 3. Test Script
@@ -54,33 +53,22 @@ def test_deepseek_api():
     # Configure OpenAI client for DeepSeek
     client = OpenAI(
         api_key=api_key,
-        base_url="https://api.deepseek.com"  # or https://api.deepseek.com/v1
+        base_url="https://api.deepseek.com/v1"
     )
     
     try:
-        # Test DeepSeek-V3 (deepseek-chat)
-        print("\nTesting DeepSeek-V3...")
+        # Test DeepSeek Chat
+        print("\nTesting DeepSeek Chat...")
         chat_response = client.chat.completions.create(
-            model="deepseek-chat",  # This uses DeepSeek-V3
+            model="deepseek-chat",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant"},
-                {"role": "user", "content": "Hello"}
+                {"role": "user", "content": "Write a tweet about artificial intelligence"}
             ],
-            stream=False
+            max_tokens=150,
+            temperature=0.7
         )
-        print("DeepSeek-V3 Response:", chat_response.choices[0].message.content)
-        
-        # Test DeepSeek-R1 (deepseek-reasoner)
-        print("\nTesting DeepSeek-R1...")
-        reasoner_response = client.chat.completions.create(
-            model="deepseek-reasoner",  # This uses DeepSeek-R1
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant"},
-                {"role": "user", "content": "Solve this problem: If a train travels at 60 mph, how long will it take to cover 180 miles?"}
-            ],
-            stream=False
-        )
-        print("DeepSeek-R1 Response:", reasoner_response.choices[0].message.content)
+        print("DeepSeek Response:", chat_response.choices[0].message.content)
         
         print("\nAPI connection successful!")
     except Exception as e:
@@ -101,31 +89,71 @@ Expected successful output:
 API Key found: Yes
 API Key length: [Your key length]
 
-Testing DeepSeek-V3...
-DeepSeek-V3 Response: [Response from DeepSeek-V3]
-
-Testing DeepSeek-R1...
-DeepSeek-R1 Response: [Response from DeepSeek-R1]
+Testing DeepSeek Chat...
+DeepSeek Response: [Generated tweet about AI]
 
 API connection successful!
 ```
 
-## 5. Available Models
+## 5. Integration Example
 
-1. **DeepSeek-V3** (General Chat Model)
+Here's how to integrate DeepSeek into your application:
+
+```python
+from openai import OpenAI
+
+def initialize_deepseek(api_key):
+    return OpenAI(
+        api_key=api_key,
+        base_url="https://api.deepseek.com/v1"
+    )
+
+def generate_content(client, prompt, system_message="You are a helpful assistant"):
+    try:
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=150,
+            temperature=0.7
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        raise Exception(f"DeepSeek API error: {str(e)}")
+```
+
+## 6. Available Models
+
+1. **DeepSeek Chat**
    - Model name: `deepseek-chat`
-   - Latest version of the chat model
-   - Best for general conversation and tasks
+   - General-purpose chat model
+   - Best for conversation, content generation, and creative tasks
+   - Supports system messages and chat-style interactions
 
-2. **DeepSeek-R1** (Reasoning Model)
-   - Model name: `deepseek-reasoner`
-   - Specialized for reasoning tasks
-   - Best for problem-solving and logical analysis
+## 7. Best Practices
 
-## 6. Troubleshooting
+1. **API Key Security**
+   - Never hardcode your API key in source code
+   - Use environment variables or secure key management
+   - Add `.env` to your `.gitignore`
 
-If you get an authentication error:
-1. Verify your API key is correctly copied in the `.env` file
+2. **Error Handling**
+   - Always implement proper error handling
+   - Check for API key presence before making requests
+   - Handle API rate limits and timeouts gracefully
+
+3. **Response Processing**
+   - Validate response content before using it
+   - Implement retry logic for failed requests
+   - Consider implementing response caching for frequently used prompts
+
+## 8. Troubleshooting
+
+If you encounter issues:
+1. Verify your API key is correctly set in the `.env` file
 2. Ensure there are no extra spaces or quotes around the API key
 3. Make sure `load_dotenv()` is called before accessing the API key
-4. Try both base URLs (`https://api.deepseek.com` and `https://api.deepseek.com/v1`) 
+4. Check that you're using the correct base URL (`https://api.deepseek.com/v1`)
+5. Verify your network connection and any proxy settings 

@@ -29,6 +29,8 @@ venv/
 ENV/
 env/
 .venv/
+venv-3.11/
+claude-env/
 
 # IDE
 .idea/

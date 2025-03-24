@@ -54,9 +54,10 @@ class TweetGenerator:
             api_key = os.getenv('DEEPSEEK_API_KEY')
             if not api_key:
                 raise ValueError("DEEPSEEK_API_KEY not found in environment variables")
-            openai.api_key = api_key
-            openai.api_base = "https://api.deepseek.com/beta"
-            self.client = openai
+            self.client = openai.OpenAI(
+                api_key=api_key,
+                base_url="https://api.deepseek.com/v1"
+            )
         else:
             raise ValueError(f"Unsupported provider: {provider}")
 
@@ -133,14 +134,16 @@ Requirements:
                 tweet = message.content[0].text
             
             else:  # deepseek
-                response = self.client.Completion.create(
+                response = self.client.chat.completions.create(
                     model="deepseek-chat",
-                    prompt=f"System: You are a social media expert who writes engaging tweets that are always under 280 characters.\n\nUser: {prompt}",
+                    messages=[
+                        {"role": "system", "content": "You are a social media expert who writes engaging tweets that are always under 280 characters."},
+                        {"role": "user", "content": prompt}
+                    ],
                     max_tokens=150,
-                    temperature=0.7,
-                    stop=None
+                    temperature=0.7
                 )
-                tweet = response.choices[0].text.strip()
+                tweet = response.choices[0].message.content.strip()
             
             # Enforce character limit
             return self.enforce_character_limit(tweet)

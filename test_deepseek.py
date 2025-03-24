@@ -17,35 +17,39 @@ def test_deepseek_api():
     # Configure OpenAI client for DeepSeek
     client = OpenAI(
         api_key=api_key,
-        base_url="https://api.deepseek.com"  # or https://api.deepseek.com/v1
+        base_url="https://api.deepseek.com/v1"
     )
     
     try:
-        # Test DeepSeek-V3 (deepseek-chat)
-        print("\nTesting DeepSeek-V3...")
-        chat_response = client.chat.completions.create(
-            model="deepseek-chat",  # This uses DeepSeek-V3
+        # Test 1: Simple greeting
+        print("\nTest 1: Simple greeting")
+        response = client.chat.completions.create(
+            model="deepseek-chat",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant"},
-                {"role": "user", "content": "Hello"}
+                {"role": "user", "content": "Say hello!"}
             ],
-            stream=False
+            max_tokens=150,
+            temperature=0.7
         )
-        print("DeepSeek-V3 Response:", chat_response.choices[0].message.content)
+        print("Response:", response.choices[0].message.content)
         
-        # Test DeepSeek-R1 (deepseek-reasoner)
-        print("\nTesting DeepSeek-R1...")
-        reasoner_response = client.chat.completions.create(
-            model="deepseek-reasoner",  # This uses DeepSeek-R1
+        # Test 2: Generate a tweet
+        print("\nTest 2: Tweet generation")
+        response = client.chat.completions.create(
+            model="deepseek-chat",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant"},
-                {"role": "user", "content": "Solve this problem: If a train travels at 60 mph, how long will it take to cover 180 miles?"}
+                {"role": "system", "content": "You are a social media expert who writes engaging tweets."},
+                {"role": "user", "content": "Write a tweet about artificial intelligence, including emojis."}
             ],
-            stream=False
+            max_tokens=150,
+            temperature=0.7
         )
-        print("DeepSeek-R1 Response:", reasoner_response.choices[0].message.content)
+        print("Generated tweet:", response.choices[0].message.content)
+        print("Tweet length:", len(response.choices[0].message.content))
         
-        print("\nAPI connection successful!")
+        print("\nAll tests completed successfully!")
+        
     except Exception as e:
         print(f"API Test Error: {str(e)}")
 
